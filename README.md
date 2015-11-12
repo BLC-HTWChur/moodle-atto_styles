@@ -95,6 +95,26 @@ If you want to use this plugin with a RTL language and it doesn't work as-is, yo
 github with modifications.
 
 
+Contribute
+----------
+
+The source file for the styles-button is in the directory "yui/src/button/js". Do not change any other javascript!
+Moodle needs the minimized version of the javascript plugin. In order to improve the code you have to install "shifter" for node.js.
+Change into your moodle-atto_styles-button directory and run:
+
+``` npm install shifter@0.4.6 ```
+
+In order to automize the process you have to start shifter inside the code directory.
+
+```
+cd yui/src/button/
+../../../node_modules/shifter/bin/shifter —watch
+
+```
+
+This will automatically minimize the code and store the final files into yui/build/moodle-atto_styles-button.
+
+
 Copyright
 ---------
 
