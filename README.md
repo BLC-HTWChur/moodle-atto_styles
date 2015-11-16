@@ -114,6 +114,10 @@ cd yui/src/button/
 
 This will automatically minimize the code and store the final files into yui/build/moodle-atto_styles-button.
 
+License
+-------
+
+This code is licensed under the GNU Public License Version 3.
 
 Copyright
 ---------
@@ -127,6 +131,12 @@ together with
 
 Synergy Learning UK
 www.synergy-learning.com
+
+and
+
+HTW Chur
+Blended Learning Center
+blc.htwchur.ch
 
 
 Credits
