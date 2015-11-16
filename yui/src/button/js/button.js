@@ -48,14 +48,13 @@ var component = 'atto_styles';
          //create new element, insert html, classes and id of old element
          newelement = $('<' + tagname + '/>').html($(oldelement).html());
 
-         if ($(oldelement).attr('class')) {
-             klasse = $(oldelement).attr('class');
-             newelement.attr('class', klasse);
-         }
-         if ($(oldelement).attr('id')) {
-             id = $(oldelement).attr('id');
-             newelement.attr('id', id);
-         }
+         $(oldelement).each(function() {
+             $.each(this.attributes, function() {
+                 if(this.specified) {
+                     newelement.attr(this.name, this.value);
+                 }
+             });
+         });
 
          //replace old with new element
          $(oldelement).replaceWith(newelement);
@@ -85,11 +84,14 @@ var component = 'atto_styles';
      if (document.createRange && window.getSelection) {
        var range = document.createRange();
        range.selectNodeContents(el);
-       var textNodes = getTextNodesIn(el);
-       var foundStart = false;
-       var charCount = 0, endCharCount;
+       var textNodes = getTextNodesIn(el),
+           foundStart = false,
+           charCount = 0,
+           endCharCount = 0,
+           textNode,
+           i;
 
-       for (var i = 0, textNode; textNode = textNodes[i++]; ) {
+       for (i = 0; textNode = textNodes[i]; i++) {
            endCharCount = charCount + textNode.length;
            if (!foundStart && start >= charCount
                    && (start < endCharCount ||
@@ -97,6 +99,7 @@ var component = 'atto_styles';
                range.setStart(textNode, start - charCount);
                foundStart = true;
            }
+           // FIXME: Bad Style: Loop condition should be within the loop definition 
            if (foundStart && end <= endCharCount) {
                range.setEnd(textNode, end - charCount);
                break;
