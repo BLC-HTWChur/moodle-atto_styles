@@ -41,92 +41,105 @@ var component = 'atto_styles';
  *
  * rename tagname by copying the contents and all attributes into a new element
  */
- function replaceTag(oldelement, tagname, start, end) {
-     var newelement, klasse, id;
+function replaceTag(oldelement, tagname, start, end) {
+    var newelement, klasse, id;
 
-     if (typeof tagname === 'string' && tagname.length) {
-         //create new element, insert html, classes and id of old element
-         newelement = $('<' + tagname + '/>').html($(oldelement).html());
+    if (typeof tagname === 'string' && tagname.length) {
+        //create new element, insert html, classes and id of old element
+        newelement = $('<' + tagname + '/>').html($(oldelement).html());
 
-         $(oldelement).each(function() {
-             $.each(this.attributes, function() {
-                 if(this.specified) {
-                     newelement.attr(this.name, this.value);
-                 }
-             });
-         });
+        $(oldelement).each(function() {
+            $.each(this.attributes, function() {
+                if(this.specified) {
+                    newelement.attr(this.name, this.value);
+                }
+            });
+        });
 
          //replace old with new element
-         $(oldelement).replaceWith(newelement);
+        $(oldelement).replaceWith(newelement);
 
-         restoreSelection(newelement[0], start, end);
-     }
- }
+        restoreSelection(newelement[0], start, end);
+    }
+}
 
  /*
  * getTextNodeIn and restoreSelection are stolen from http://stackoverflow.com/questions/6240139/highlight-text-range-using-javascript
  */
 
- function getTextNodesIn(node) {
-     var textNodes = [];
-     if (node.nodeType == 3) {
-         textNodes.push(node);
-     } else {
-         var children = node.childNodes;
-         for (var i = 0, len = children.length; i < len; ++i) {
-             textNodes.push.apply(textNodes, getTextNodesIn(children[i]));
-         }
-     }
-     return textNodes;
- }
+function getTextNodesIn(node) {
+    var textNodes = [];
+    if (node.nodeType === 3) {
+        textNodes.push(node);
+    }
+    else {
+        var children = node.childNodes,
+            len      = children.length;
 
- function restoreSelection(el, start, end) {
-     if (document.createRange && window.getSelection) {
-       var range = document.createRange();
-       range.selectNodeContents(el);
-       var textNodes = getTextNodesIn(el),
-           foundStart = false,
-           charCount = 0,
-           endCharCount = 0,
-           textNode,
-           i;
+        for (var i = 0; i < len; ++i) {
+            textNodes.push(getTextNodesIn(children[i]));
+        }
+    }
+    return textNodes;
+}
 
-       for (i = 0; textNode = textNodes[i]; i++) {
-           endCharCount = charCount + textNode.length;
-           if (!foundStart && start >= charCount
-                   && (start < endCharCount ||
-                   (start == endCharCount && i <= textNodes.length))) {
-               range.setStart(textNode, start - charCount);
-               foundStart = true;
-           }
-           // FIXME: Bad Style: Loop condition should be within the loop definition 
-           if (foundStart && end <= endCharCount) {
-               range.setEnd(textNode, end - charCount);
-               break;
-           }
-           charCount = endCharCount;
-       }
+function restoreSelection(el, start, end) {
+    if (document.createRange && window.getSelection) {
+        var range        = document.createRange(),
+            sel          = window.getSelection(),
+            textNodes    = getTextNodesIn(el),
+            foundStart   = false,
+            charCount    = 0,
+            endCharCount = 0,
+            textNode,
+            i;
 
-       var sel = window.getSelection();
-       sel.removeAllRanges();
-       sel.addRange(range);
-   } else if (document.selection && document.body.createTextRange) {
-       var textRange = document.body.createTextRange();
-       textRange.moveToElementText(el);
-       textRange.collapse(true);
-       textRange.moveEnd("character", end);
-       textRange.moveStart("character", start);
-       textRange.select();
-   }
- }
+        range.selectNodeContents(el);
 
+        for (i = 0; i < textNodes.length && end > charCount; i++) {
+            textNode     = textNodes[i];
+            endCharCount = charCount + textNode.length;
+
+            if (!foundStart &&
+                start >= charCount &&
+                start <= endCharCount) {
+                range.setStart(textNode, start - charCount);
+                foundStart = true;
+            }
+
+            if (end <= endCharCount && foundStart) {
+                range.setEnd(textNode, end - charCount);
+            }
+
+            charCount = endCharCount;
+        }
+
+        // ensure that the range is really terminated.
+        if (end > charCount && foundStart) {
+            range.setEnd(textNode, charCount);
+        }
+
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+    else if (document.selection && document.body.createTextRange) {
+        var textRange = document.body.createTextRange();
+        textRange.moveToElementText(el);
+        textRange.collapse(true);
+        textRange.moveEnd("character", end);
+        textRange.moveStart("character", start);
+        textRange.select();
+    }
+}
 
 Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.EditorPlugin, [], {
     initializer: function() {
-        var styles = this.get('styles');
+        var styles = this.get('styles'),
+            items = [],
+            icon,
+            span;
+
         styles = JSON.parse(styles);
-        var items = [];
-        var icon, span;
         Y.Array.each(styles, function(style) {
             icon = '';
             span = '<span>';
