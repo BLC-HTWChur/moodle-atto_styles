@@ -249,54 +249,82 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
         var focus = window.getSelection().focusNode,
             anchor = window.getSelection().anchorNode,
             selectionStart = window.getSelection().anchorOffset,
-            selectionEnd = window.getSelection().focusOffset;
+            selectionEnd = window.getSelection().focusOffset,
+            tagname = style[2],
+            classes = style[1];
+
+            if (classes === undefined) {
+                classes = '';
+            }
 
         // first case: focus = anchor
         if (focus === anchor) {
-            displaystyle = anchor.getPropertyValue('display');
 
+            var parent = focus.parentNode;
+            pstyle = window.getComputedStyle(parent, null);
+            displaystyle = pstyle.getPropertyValue('display');
 
             if (displaystyle === 'block') {
                 // insert inline tag
+                var textcontent = $(anchor).text();
+
+                if (tagname === undefined || tagname.length === 0) {
+                    tagname = 'span';
+                }
+
+                if (parent.childNodes.length === 1) {
+
+                    var text1,
+                        text2,
+                        text3;
+
+                    text1 = textcontent.slice(0,selectionStart);
+                    text2 = textcontent.slice(selectionStart, selectionEnd);
+                    text3 = textcontent.slice(selectionEnd, textcontent.length);
+
+                    newelement = $('<' + tagname + ' class="' + classes + '"/>').html(text2);
+                    if (text1.length) {
+                        $(parent).html(text1);
+                    } else {
+                        $(parent).html('');
+                    }
+
+                    $(parent).append(newelement);
+
+                    if (text3.length) {
+                        $(parent).append(text3);
+                    }
+                }
 
             } else {
                 // replace inline tag
-                anchor.setAttribute('class', style[1]);
-                replaceTag(anchor, style[2], selectionStart, selectionEnd);
-
-            }
-            this.get('host').toggleInlineSelectionClass(styles);
-        } else if (
-
-        )
-
-
-
-            var styles = style[1].split(" ");
-
-
-
-
-
-
-
-            for (p = element; p; p = p.parentNode) {
-                if (p.nodeType !== 1) {
-                    continue;
-                }
-                pstyle = window.getComputedStyle(p, null);
-                if (pstyle) {
-                    var displaystyle = pstyle.getPropertyValue('display');
-                    if (displaystyle !== 'none') {
-                        eID = p;
-                        break;
-                    }
+                anchor.setAttribute('class', classes);
+                if (tagname !== undefined &&
+                    tagname.length) {
+                        replaceTag(anchor, tagname, selectionStart, selectionEnd);
                 }
             }
+        }
 
-            console.log('replaceTag aufrufen ' + style[2]);
-            replaceTag(eID, style[2], selectionStart, selectionEnd);
-            console.log('fertig');
+            // var styles = style[1].split(" ");
+            //
+            // for (p = element; p; p = p.parentNode) {
+            //     if (p.nodeType !== 1) {
+            //         continue;
+            //     }
+            //     pstyle = window.getComputedStyle(p, null);
+            //     if (pstyle) {
+            //         var displaystyle = pstyle.getPropertyValue('display');
+            //         if (displaystyle !== 'none') {
+            //             eID = p;
+            //             break;
+            //         }
+            //     }
+            // }
+            //
+            // console.log('replaceTag aufrufen ' + style[2]);
+            // replaceTag(eID, style[2], selectionStart, selectionEnd);
+            // console.log('fertig');
         }
         // Mark as updated
         this.markUpdated();
