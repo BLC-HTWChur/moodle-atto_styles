@@ -243,16 +243,42 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
 
         } else {
 
+// parse selection to find anchorNode and focusNode
+// check if anchorNode and focusNode are on same level (have same parent)
+
+        var focus = window.getSelection().focusNode,
+            anchor = window.getSelection().anchorNode,
+            selectionStart = window.getSelection().anchorOffset,
+            selectionEnd = window.getSelection().focusOffset;
+
+        // first case: focus = anchor
+        if (focus === anchor) {
+            displaystyle = anchor.getPropertyValue('display');
+
+
+            if (displaystyle === 'block') {
+                // insert inline tag
+
+            } else {
+                // replace inline tag
+                anchor.setAttribute('class', style[1]);
+                replaceTag(anchor, style[2], selectionStart, selectionEnd);
+
+            }
+            this.get('host').toggleInlineSelectionClass(styles);
+        } else if (
+
+        )
+
+
+
             var styles = style[1].split(" ");
 
-            element = window.getSelection().focusNode;
 
 
 
-            this.get('host').toggleInlineSelectionClass(styles);
 
-            var selectionStart = window.getSelection().anchorOffset,
-                selectionEnd = window.getSelection().focusOffset;
+
 
             for (p = element; p; p = p.parentNode) {
                 if (p.nodeType !== 1) {
