@@ -237,11 +237,40 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
                 eID.removeAttribute('class');
             }
 
+            console.log('replaceTag aufrufen ' + style[2]);
             replaceTag(eID, style[2], selectionStart, selectionEnd);
+            console.log('fertig');
 
         } else {
+
             var styles = style[1].split(" ");
+
+            element = window.getSelection().focusNode;
+
+
+
             this.get('host').toggleInlineSelectionClass(styles);
+
+            var selectionStart = window.getSelection().anchorOffset,
+                selectionEnd = window.getSelection().focusOffset;
+
+            for (p = element; p; p = p.parentNode) {
+                if (p.nodeType !== 1) {
+                    continue;
+                }
+                pstyle = window.getComputedStyle(p, null);
+                if (pstyle) {
+                    var displaystyle = pstyle.getPropertyValue('display');
+                    if (displaystyle !== 'none') {
+                        eID = p;
+                        break;
+                    }
+                }
+            }
+
+            console.log('replaceTag aufrufen ' + style[2]);
+            replaceTag(eID, style[2], selectionStart, selectionEnd);
+            console.log('fertig');
         }
         // Mark as updated
         this.markUpdated();

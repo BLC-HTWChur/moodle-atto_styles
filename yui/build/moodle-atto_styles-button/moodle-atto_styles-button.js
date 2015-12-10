@@ -38,6 +38,88 @@ YUI.add('moodle-atto_styles-button', function (Y, NAME) {
 
 var component = 'atto_styles';
 
+/**
+ * @method replaceTag
+ *
+ * rename tagname by copying the contents and all attributes into a new element
+ */
+ function replaceTag(oldelement, tagname, start, end) {
+     var newelement, klasse, id;
+
+     if (typeof tagname === 'string' && tagname.length) {
+         //create new element, insert html, classes and id of old element
+         newelement = $('<' + tagname + '/>').html($(oldelement).html());
+
+         if ($(oldelement).attr('class')) {
+             klasse = $(oldelement).attr('class');
+             newelement.attr('class', klasse);
+         }
+         if ($(oldelement).attr('id')) {
+             id = $(oldelement).attr('id');
+             newelement.attr('id', id);
+         }
+
+         //replace old with new element
+         $(oldelement).replaceWith(newelement);
+
+         restoreSelection(newelement[0], start, end);
+     }
+ }
+
+ /*
+ * getTextNodeIn and restoreSelection are stolen from http://stackoverflow.com/questions/6240139/highlight-text-range-using-javascript
+ */
+
+ function getTextNodesIn(node) {
+     var textNodes = [];
+     if (node.nodeType == 3) {
+         textNodes.push(node);
+     } else {
+         var children = node.childNodes;
+         for (var i = 0, len = children.length; i < len; ++i) {
+             textNodes.push.apply(textNodes, getTextNodesIn(children[i]));
+         }
+     }
+     return textNodes;
+ }
+
+ function restoreSelection(el, start, end) {
+     if (document.createRange && window.getSelection) {
+       var range = document.createRange();
+       range.selectNodeContents(el);
+       var textNodes = getTextNodesIn(el);
+       var foundStart = false;
+       var charCount = 0, endCharCount;
+
+       for (var i = 0, textNode; textNode = textNodes[i++]; ) {
+           endCharCount = charCount + textNode.length;
+           if (!foundStart && start >= charCount
+                   && (start < endCharCount ||
+                   (start == endCharCount && i <= textNodes.length))) {
+               range.setStart(textNode, start - charCount);
+               foundStart = true;
+           }
+           if (foundStart && end <= endCharCount) {
+               range.setEnd(textNode, end - charCount);
+               break;
+           }
+           charCount = endCharCount;
+       }
+
+       var sel = window.getSelection();
+       sel.removeAllRanges();
+       sel.addRange(range);
+   } else if (document.selection && document.body.createTextRange) {
+       var textRange = document.body.createTextRange();
+       textRange.moveToElementText(el);
+       textRange.collapse(true);
+       textRange.moveEnd("character", end);
+       textRange.moveStart("character", start);
+       textRange.select();
+   }
+ }
+
+
 Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.EditorPlugin, [], {
     initializer: function() {
         var styles = this.get('styles');
@@ -55,7 +137,7 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
             }
             items.push({
                 text: span+icon+style.title+'</span>',
-                callbackArgs: ['<'+style.type+'>', style.classes]
+                callbackArgs: ['<'+style.type+'>', style.classes, style.tag]
             });
         });
 
@@ -105,6 +187,11 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
                 pstyle = window.getComputedStyle(p, null);
                 if (pstyle) {
                     p.removeAttribute('class');
+                    if(pstyle.getPropertyValue('display') === 'block') {
+                        replaceTag(p, 'div');
+                    } else {
+                        replaceTag(p, 'span');
+                    }
                     break;
                 }
             }
@@ -112,6 +199,10 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
         } else if (style[0] === '<block>') {
             document.execCommand('formatBlock', false, '<div>');
             element = window.getSelection().focusNode;
+
+            var selectionStart = window.getSelection().anchorOffset,
+                selectionEnd = window.getSelection().focusOffset;
+
             for (p = element; p; p = p.parentNode) {
                 if (p.nodeType !== 1) {
                     continue;
@@ -125,10 +216,24 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
                     }
                 }
             }
-            eID.setAttribute('class', style[1]);
+
+            if (style[1].length){
+                eID.setAttribute('class', style[1]);
+            } else {
+                eID.removeAttribute('class');
+            }
+
+            console.log('replaceTag aufrufen ' + style[2]);
+            replaceTag(eID, style[2], selectionStart, selectionEnd);
+            console.log('fertig');
+
         } else {
             var styles = style[1].split(" ");
             this.get('host').toggleInlineSelectionClass(styles);
+
+            console.log('replaceTag aufrufen ' + style[2]);
+            replaceTag(eID, style[2], selectionStart, selectionEnd);
+            console.log('fertig');
         }
         // Mark as updated
         this.markUpdated();
@@ -157,7 +262,6 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
         }
     }
 });
-
 
 
 }, '@VERSION@', {"requires": ["moodle-editor_atto-plugin"]});
