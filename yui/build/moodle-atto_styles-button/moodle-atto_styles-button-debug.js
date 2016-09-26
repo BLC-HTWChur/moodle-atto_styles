@@ -243,7 +243,6 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
             console.log('fertig');
 
         } else {
-<<<<<<< HEAD
 
 // parse selection to find anchorNode and focusNode
 // check if anchorNode and focusNode are on same level (have same parent)
@@ -319,13 +318,6 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
             // console.log('replaceTag aufrufen ' + style[2]);
             // replaceTag(eID, style[2], selectionStart, selectionEnd);
             // console.log('fertig');
-=======
-            styles = style[1].split(" ");
-            host = this.get('host');
-            for (i = 0; i < styles.length; i += 1) {
-                host.toggleInlineSelectionClass([styles[i]]);
-            }
->>>>>>> refs/remotes/origin/master
         }
         // Mark as updated
         this.markUpdated();
