@@ -17,16 +17,15 @@
 /**
  * Atto styles - Version file
  *
- * @package     atto
- * @subpackage  atto_styles
- * @copyright   2015 Alexander Bias, University of Ulm <alexander.bias@uni-ulm.de>, together with Synergy Learning UK
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    atto_styles
+ * @copyright  2015 Andrew Davidson, Synergy Learning UK <andrew.davidson@synergy-learning.com> on behalf of Alexander Bias, University of Ulm <alexander.bias@uni-ulm.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'atto_styles';
-$plugin->version = 2015051100;
-$plugin->release = '2.9 (Build: 2015081800)';
-$plugin->requires = 2015051100;
+$plugin->version = 2016071900;
+$plugin->release = 'v3.1-r1';
+$plugin->requires = 2016052300;
 $plugin->maturity = MATURITY_STABLE;

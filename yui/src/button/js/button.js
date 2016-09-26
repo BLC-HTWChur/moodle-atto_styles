@@ -16,10 +16,9 @@
 /**
  * Atto styles - YUI file
  *
- * @package     atto
- * @subpackage  atto_styles
- * @copyright   2015 Alexander Bias, University of Ulm <alexander.bias@uni-ulm.de>, together with Synergy Learning UK
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    atto_styles
+ * @copyright  2015 Andrew Davidson, Synergy Learning UK <andrew.davidson@synergy-learning.com> on behalf of Alexander Bias, University of Ulm <alexander.bias@uni-ulm.de>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
@@ -191,7 +190,7 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
      * @private
      */
     _changeStyle: function(e, style) {
-        var eID, element, p, pstyle;
+        var eID, element, p, pstyle, styles, host, i;
         if (style[0] === '<nostyle>') {
             element = window.getSelection().focusNode;
             for (p = element; p; p = p.parentNode) {
@@ -242,6 +241,7 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
             console.log('fertig');
 
         } else {
+<<<<<<< HEAD
 
 // parse selection to find anchorNode and focusNode
 // check if anchorNode and focusNode are on same level (have same parent)
@@ -325,6 +325,13 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
             // console.log('replaceTag aufrufen ' + style[2]);
             // replaceTag(eID, style[2], selectionStart, selectionEnd);
             // console.log('fertig');
+=======
+            styles = style[1].split(" ");
+            host = this.get('host');
+            for (i = 0; i < styles.length; i += 1) {
+                host.toggleInlineSelectionClass([styles[i]]);
+            }
+>>>>>>> refs/remotes/origin/master
         }
         // Mark as updated
         this.markUpdated();

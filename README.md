@@ -7,12 +7,17 @@ Moodle Atto plugin which lets the administrator provide custom CSS classes which
 Requirements
 ------------
 
-This plugin requires Moodle 2.9+
+This plugin requires Moodle 3.1+
 
 
 Changes
 -------
 
+* 2016-07-19 - Check compatibility for Moodle 3.1, no functionality change
+* 2016-05-26 - Adding behat feature testing block and inline styles, no functionality change - Credits to Janek Lasocki-Biczysko
+* 2016-03-03 - Bugfix: Adding 2 classes for inline styling failed on Moodle 3.0.x - Credits to clementpr and Davo Smith
+* 2016-02-10 - Change plugin version and release scheme to the scheme promoted by moodle.org, no functionality change
+* 2016-01-01 - Check compatibility for Moodle 3.0, no functionality change
 * 2015-11-20 - replace block and inline tags via the configuration - Credits to HTW Chur
 * 2015-08-18 - Check compatibility for Moodle 2.9, no functionality change
 * 2015-05-22 - Include bootstrap classes into configuration example - Credits to David Mudrák
@@ -83,7 +88,7 @@ Report a bug or suggest an improvement: https://github.com/moodleuulm/moodle-att
 Moodle release support
 ----------------------
 
-Due to limited ressources, atto_styles is only maintained for the most recent major release of Moodle. However, previous versions of this plugin which work in legacy major releases of Moodle are still available as-is without any further updates in the Moodle Plugins repository.
+Due to limited resources, atto_styles is only maintained for the most recent major release of Moodle. However, previous versions of this plugin which work in legacy major releases of Moodle are still available as-is without any further updates in the Moodle Plugins repository.
 
 There may be several weeks after a new major release of Moodle has been published until we can do a compatibility check and fix problems if necessary. If you encounter problems with a new major release of Moodle - or can confirm that atto_styles still works with a new major relase - please let us know on https://github.com/moodleuulm/moodle-atto_styles/issues
 
@@ -122,6 +127,12 @@ This code is licensed under the GNU Public License Version 3.
 
 Copyright
 ---------
+
+Andrew Davidson
+Synergy Learning UK
+www.synergy-learning.com
+
+on behalf of
 
 University of Ulm
 kiz - Media Department
