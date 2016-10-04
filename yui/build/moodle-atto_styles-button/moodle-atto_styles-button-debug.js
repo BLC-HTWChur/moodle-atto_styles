@@ -135,12 +135,10 @@ function restoreSelection(el, start, end) {
 
 Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.EditorPlugin, [], {
     initializer: function() {
-        var styles = this.get('styles'),
-            items = [],
-            icon,
-            span;
-
+        var styles = this.get('styles');
         styles = JSON.parse(styles);
+        var items = [];
+        var icon, span;
         Y.Array.each(styles, function(style) {
             icon = '';
             span = '<span>';
@@ -202,11 +200,13 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
                 pstyle = window.getComputedStyle(p, null);
                 if (pstyle) {
                     p.removeAttribute('class');
+                    /** new code here? TODO 
                     if(pstyle.getPropertyValue('display') === 'block') {
                         replaceTag(p, 'div');
                     } else {
                         replaceTag(p, 'span');
                     }
+                    */
                     break;
                 }
             }
@@ -214,10 +214,10 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
         } else if (style[0] === '<block>') {
             document.execCommand('formatBlock', false, '<div>');
             element = window.getSelection().focusNode;
-
+            /** new code here? TODO 
             var selectionStart = window.getSelection().anchorOffset,
                 selectionEnd = window.getSelection().focusOffset;
-
+            */
             for (p = element; p; p = p.parentNode) {
                 if (p.nodeType !== 1) {
                     continue;
@@ -231,7 +231,7 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
                     }
                 }
             }
-
+/** new code here ? TODO
             if (style[1].length){
                 eID.setAttribute('class', style[1]);
             } else {
@@ -318,6 +318,14 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
             // console.log('replaceTag aufrufen ' + style[2]);
             // replaceTag(eID, style[2], selectionStart, selectionEnd);
             // console.log('fertig');
+*/
+            eID.setAttribute('class', style[1]);
+        } else {
+            styles = style[1].split(" ");
+            host = this.get('host');
+            for (i = 0; i < styles.length; i += 1) {
+                host.toggleInlineSelectionClass([styles[i]]);
+            }           
         }
         // Mark as updated
         this.markUpdated();
