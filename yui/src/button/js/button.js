@@ -198,13 +198,13 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
                 pstyle = window.getComputedStyle(p, null);
                 if (pstyle) {
                     p.removeAttribute('class');
-                    /** new code here ? TODO 
+                    ///** new code here ? TODO 
                     if(pstyle.getPropertyValue('display') === 'block') {
                         replaceTag(p, 'div');
                     } else {
                         replaceTag(p, 'span');
                     }
-                    */
+                    // end new code */
                     break;
                 }
             }
@@ -212,10 +212,10 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
         } else if (style[0] === '<block>') {
             document.execCommand('formatBlock', false, '<div>');
             element = window.getSelection().focusNode;
-            /** new code here ? TODO  
+            ///** new code here ? TODO  
             var selectionStart = window.getSelection().anchorOffset,
                 selectionEnd = window.getSelection().focusOffset;
-            */
+            // end new code */
             for (p = element; p; p = p.parentNode) {
                 if (p.nodeType !== 1) {
                     continue;
@@ -229,7 +229,7 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
                     }
                 }
             }
-/** new code here ? TODO
+///** new code here ? TODO
             if (style[1].length){
                 eID.setAttribute('class', style[1]);
             } else {
@@ -245,66 +245,66 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
 // parse selection to find anchorNode and focusNode
 // check if anchorNode and focusNode are on same level (have same parent)
 
-        var focus = window.getSelection().focusNode,
-            anchor = window.getSelection().anchorNode,
-            selectionStart = window.getSelection().anchorOffset,
-            selectionEnd = window.getSelection().focusOffset,
-            tagname = style[2],
-            classes = style[1];
+            var focus = window.getSelection().focusNode,
+                anchor = window.getSelection().anchorNode,
+                selectionStart = window.getSelection().anchorOffset,
+                selectionEnd = window.getSelection().focusOffset,
+                tagname = style[2],
+                classes = style[1];
 
-            if (classes === undefined) {
-                classes = '';
-            }
-
-        // first case: focus = anchor
-        if (focus === anchor) {
-
-            var parent = focus.parentNode;
-            pstyle = window.getComputedStyle(parent, null);
-            displaystyle = pstyle.getPropertyValue('display');
-
-            if (displaystyle === 'block') {
-                // insert inline tag
-                var textcontent = $(anchor).text();
-
-                if (tagname === undefined || tagname.length === 0) {
-                    tagname = 'span';
+                if (classes === undefined) {
+                    classes = '';
                 }
 
-                if (parent.childNodes.length === 1) {
+            // first case: focus = anchor
+            if (focus === anchor) {
 
-                    var text1,
-                        text2,
-                        text3;
+                var parent = focus.parentNode;
+                pstyle = window.getComputedStyle(parent, null);
+                displaystyle = pstyle.getPropertyValue('display');
 
-                    text1 = textcontent.slice(0,selectionStart);
-                    text2 = textcontent.slice(selectionStart, selectionEnd);
-                    text3 = textcontent.slice(selectionEnd, textcontent.length);
+                if (displaystyle === 'block') {
+                    // insert inline tag
+                    var textcontent = $(anchor).text();
 
-                    newelement = $('<' + tagname + ' class="' + classes + '"/>').html(text2);
-                    if (text1.length) {
-                        $(parent).html(text1);
-                    } else {
-                        $(parent).html('');
+                    if (tagname === undefined || tagname.length === 0) {
+                        tagname = 'span';
                     }
 
-                    $(parent).append(newelement);
+                    if (parent.childNodes.length === 1) {
 
-                    if (text3.length) {
-                        $(parent).append(text3);
+                        var text1,
+                            text2,
+                            text3;
+
+                        text1 = textcontent.slice(0,selectionStart);
+                        text2 = textcontent.slice(selectionStart, selectionEnd);
+                        text3 = textcontent.slice(selectionEnd, textcontent.length);
+
+                        newelement = $('<' + tagname + ' class="' + classes + '"/>').html(text2);
+                        if (text1.length) {
+                            $(parent).html(text1);
+                        } else {
+                            $(parent).html('');
+                        }
+
+                        $(parent).append(newelement);
+
+                        if (text3.length) {
+                            $(parent).append(text3);
+                        }
                     }
-                }
 
-            } else {
-                // replace inline tag
-                anchor.setAttribute('class', classes);
-                if (tagname !== undefined &&
-                    tagname.length) {
-                        replaceTag(anchor, tagname, selectionStart, selectionEnd);
+                } else {
+                    // replace inline tag
+                    anchor.setAttribute('class', classes);
+                    if (tagname !== undefined &&
+                        tagname.length) {
+                            replaceTag(anchor, tagname, selectionStart, selectionEnd);
+                    }
                 }
             }
         }
-
             // var styles = style[1].split(" ");
             //
             // for (p = element; p; p = p.parentNode) {
@@ -324,7 +324,8 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
             // console.log('replaceTag aufrufen ' + style[2]);
             // replaceTag(eID, style[2], selectionStart, selectionEnd);
             // console.log('fertig');
-*/
+//end new code */
+/** original code
             eID.setAttribute('class', style[1]);
         } else {
             styles = style[1].split(" ");
@@ -333,6 +334,7 @@ Y.namespace('M.atto_styles').Button = Y.Base.create('button', Y.M.editor_atto.Ed
                 host.toggleInlineSelectionClass([styles[i]]);
             }       
         }
+end original code */
         // Mark as updated
         this.markUpdated();
     },
